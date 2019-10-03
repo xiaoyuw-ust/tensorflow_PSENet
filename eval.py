@@ -8,10 +8,10 @@ from tensorflow.python.client import timeline
 from utils.utils_tool import logger, cfg
 import matplotlib.pyplot as plt
 
-tf.app.flags.DEFINE_string('test_data_path', None, '')
+tf.app.flags.DEFINE_string('test_data_path', './tmp/images/', '')
 tf.app.flags.DEFINE_string('gpu_list', '0', '')
-tf.app.flags.DEFINE_string('checkpoint_path', './', '')
-tf.app.flags.DEFINE_string('output_dir', './results/', '')
+tf.app.flags.DEFINE_string('checkpoint_path', './model/', '')
+tf.app.flags.DEFINE_string('output_dir', './tmp/results/', '')
 tf.app.flags.DEFINE_bool('no_write_images', False, 'do not write images')
 
 from nets import model
@@ -167,8 +167,10 @@ def main(argv=None):
         variable_averages = tf.train.ExponentialMovingAverage(0.997, global_step)
         saver = tf.train.Saver(variable_averages.variables_to_restore())
         with tf.Session(config=tf.ConfigProto(allow_soft_placement=True)) as sess:
-            ckpt_state = tf.train.get_checkpoint_state(FLAGS.checkpoint_path)
-            model_path = os.path.join(FLAGS.checkpoint_path, os.path.basename(ckpt_state.model_checkpoint_path))
+            # ckpt_state = tf.train.get_checkpoint_state(FLAGS.checkpoint_path)
+            # model_path = os.path.join(FLAGS.checkpoint_path, os.path.basename(ckpt_state.model_checkpoint_path))
+            saver = tf.train.import_meta_graph(FLAGS.checkpoint_path + 'model.ckpt.meta')
+            model_path = FLAGS.checkpoint_path + 'model.ckpt'
             logger.info('Restore from {}'.format(model_path))
             saver.restore(sess, model_path)
 
