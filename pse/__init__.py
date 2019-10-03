@@ -30,5 +30,3 @@ def pse(kernals, min_area=5):
     pred = pse_cpp(label, kernals, c=6)
 
     return pred, label_values
-
-
