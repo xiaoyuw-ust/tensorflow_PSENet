@@ -69,7 +69,7 @@ def load_annoataion(p):
             # x1, y1, x2, y2, x3, y3, x4, y4 = list(map(float, line[:8]))
             # text_polys.append([[x1, y1], [x2, y2], [x3, y3], [x4, y4]])
             # modify to support polygon
-            text_polys.append(np.reshape(np.array(list(map(float,line[:-1]))), (-1,2)).tolist())
+            text_polys.append(np.reshape(np.array(list(map(float,line[:-1]))), (-1,2)))
             #TODO:maybe add '?' for icpr2018 (michael)
             if label == '*' or label == '###' or label == '?':
                 text_tags.append(True)
