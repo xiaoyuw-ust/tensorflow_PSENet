@@ -64,15 +64,25 @@ def load_annoataion(p):
             label = line[-1]
             # strip BOM. \ufeff for python3,  \xef\xbb\bf for python2
             line = [i.strip('\ufeff').strip('\xef\xbb\xbf') for i in line]
+            line = np.array(list(map(float, line)))
+            text_polys.append(line.reshape((-1,2)))
+            # x1, y1, x2, y2, x3, y3, x4, y4 = list(map(float, line))
+            # text_polys.append([[x1, y1], [x2, y2], [x3, y3], [x4, y4]])
 
-            x1, y1, x2, y2, x3, y3, x4, y4 = list(map(float, line[:8]))
-            text_polys.append([[x1, y1], [x2, y2], [x3, y3], [x4, y4]])
             #TODO:maybe add '?' for icpr2018 (michael)
             if label == '*' or label == '###' or label == '?':
                 text_tags.append(True)
             else:
                 text_tags.append(False)
+        padding_ploys(text_polys)
         return np.array(text_polys, dtype=np.float32), np.array(text_tags, dtype=np.bool)
+
+def padding_ploys(text_polys):
+    max_num = max([len(arr) for arr in text_polys])
+    for i in range(len(text_polys)):
+        if len(text_polys[i]) < max_num:
+            text_polys[i] = np.array(list(text_polys[i]) + [list(text_polys[i][-1])*(max_num-len(text_polys[i]))])
+    return text_polys
 
 def check_and_validate_polys(polys, tags, xxx_todo_changeme):
     '''
