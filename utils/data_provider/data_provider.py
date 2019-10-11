@@ -69,13 +69,13 @@ def load_annoataion(p):
             # x1, y1, x2, y2, x3, y3, x4, y4 = list(map(float, line[:8]))
             # text_polys.append([[x1, y1], [x2, y2], [x3, y3], [x4, y4]])
             # modify to support polygon
-            text_polys.append(np.reshape(np.array(list(map(float,line[:-1]))), (-1,2)))
+            text_polys.append(np.reshape(np.array(list(map(float,line[:-1])), dtype=np.float32), (-1,2)))
             #TODO:maybe add '?' for icpr2018 (michael)
             if label == '*' or label == '###' or label == '?':
                 text_tags.append(True)
             else:
                 text_tags.append(False)
-        return np.array(text_polys, dtype=np.float32), np.array(text_tags, dtype=np.bool)
+        return np.array(text_polys, dtype=np.object), np.array(text_tags, dtype=np.bool)
 
 def check_and_validate_polys(polys, tags, xxx_todo_changeme):
     '''
@@ -88,8 +88,9 @@ def check_and_validate_polys(polys, tags, xxx_todo_changeme):
     (h, w) = xxx_todo_changeme
     if polys.shape[0] == 0:
         return [], []
-    polys[:, :, 0] = np.clip(polys[:, :, 0], 0, w-1)
-    polys[:, :, 1] = np.clip(polys[:, :, 1], 0, h-1)
+    for poly in polys:
+        poly[:, 0] = np.clip(poly[:, 0], 0, w-1)
+        poly[:, 1] = np.clip(poly[:, 1], 0, h-1)
 
     validated_polys = []
     validated_tags = []
@@ -102,7 +103,7 @@ def check_and_validate_polys(polys, tags, xxx_todo_changeme):
 
         validated_polys.append(poly)
         validated_tags.append(tag)
-    return np.array(validated_polys), np.array(validated_tags)
+    return np.array(validated_polys, dtype=np.object), np.array(validated_tags)
 
 def crop_area(im, polys, tags, crop_background=False, max_tries=50):
     '''
@@ -147,9 +148,14 @@ def crop_area(im, polys, tags, crop_background=False, max_tries=50):
             # area too small
             continue
         if polys.shape[0] != 0:
-            poly_axis_in_area = (polys[:, :, 0] >= xmin) & (polys[:, :, 0] <= xmax) \
-                                & (polys[:, :, 1] >= ymin) & (polys[:, :, 1] <= ymax)
-            selected_polys = np.where(np.sum(poly_axis_in_area, axis=1) == 4)[0]
+            def makevfunc(xmin, xmax, ymin, ymax):
+                def func(poly):
+                    poly_axis_in_area = (poly[:, 0] >= xmin) & (poly[:, 0] <= xmax) \
+                                        & (poly[:, 1] >= ymin) & (poly[:, 1] <= ymax)
+                    return np.sum(poly_axis_in_area) == np.shape(poly)[0]
+                vfunc = np.vectorize(func)
+                return vfunc
+            selected_polys = np.where(makevfunc(xmin, xmax, ymin, ymax)(polys))[0]
         else:
             selected_polys = []
         if len(selected_polys) == 0:
@@ -161,8 +167,9 @@ def crop_area(im, polys, tags, crop_background=False, max_tries=50):
         im = im[ymin:ymax+1, xmin:xmax+1, :]
         polys = polys[selected_polys]
         tags = tags[selected_polys]
-        polys[:, :, 0] -= xmin
-        polys[:, :, 1] -= ymin
+        for poly in polys:
+            poly[:, 0] -= xmin
+            poly[:, 1] -= ymin
         return im, polys, tags
 
     return im, polys, tags
@@ -323,8 +330,9 @@ def generator(input_size=512, batch_size=32,
                     im = cv2.resize(im, dsize=(resize_w, resize_h))
                     resize_ratio_3_x = resize_w/float(new_w)
                     resize_ratio_3_y = resize_h/float(new_h)
-                    text_polys[:, :, 0] *= resize_ratio_3_x
-                    text_polys[:, :, 1] *= resize_ratio_3_y
+                    for text_poly in text_polys:
+                        text_poly[:, 0] *= resize_ratio_3_x
+                        text_poly[:, 1] *= resize_ratio_3_y
                     new_h, new_w, _ = im.shape
                     seg_map_per_image, training_mask = generate_seg((new_h, new_w), text_polys, text_tags,
                                                                      image_list[i], scale_ratio)
