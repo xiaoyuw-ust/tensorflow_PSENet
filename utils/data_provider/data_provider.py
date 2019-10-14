@@ -121,7 +121,7 @@ def crop_area(im, polys, tags, crop_background=False, max_tries=50):
     h_array = np.zeros((h + pad_h*2), dtype=np.int32)
     w_array = np.zeros((w + pad_w*2), dtype=np.int32)
     for poly in polys:
-        poly = np.round(poly, decimals=0).astype(np.int32)
+        poly = np.round(poly.astype(np.float32), decimals=0).astype(np.int32)
         minx = np.min(poly[:, 0])
         maxx = np.max(poly[:, 0])
         w_array[minx+pad_w:maxx+pad_w] = 1
