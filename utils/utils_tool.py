@@ -1,8 +1,11 @@
 import logging
 from easydict import EasyDict as edict
-import Queue
 import numpy as np
 import cv2
+try:
+    import Queue
+except ImportError:
+    import queue as Queue
 
 logging.basicConfig()
 logger = logging.getLogger()
