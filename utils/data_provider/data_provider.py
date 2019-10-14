@@ -150,6 +150,7 @@ def crop_area(im, polys, tags, crop_background=False, max_tries=50):
         if polys.shape[0] != 0:
             def makevfunc(xmin, xmax, ymin, ymax):
                 def func(poly):
+                    poly = poly.astype(np.float32)
                     poly_axis_in_area = (poly[:, 0] >= xmin) & (poly[:, 0] <= xmax) \
                                         & (poly[:, 1] >= ymin) & (poly[:, 1] <= ymax)
                     return np.sum(poly_axis_in_area) == np.shape(poly)[0]
