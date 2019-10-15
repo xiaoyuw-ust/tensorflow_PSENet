@@ -81,7 +81,7 @@ def padding_ploys(text_polys):
     max_num = max([len(arr) for arr in text_polys])
     for i in range(len(text_polys)):
         if len(text_polys[i]) < max_num:
-            text_polys[i] = np.array(list(text_polys[i]) + [list(text_polys[i][-1])*(max_num-len(text_polys[i]))])
+            text_polys[i] = np.array(list(text_polys[i]) + [list(text_polys[i][-1])]*(max_num-len(text_polys[i])))
     return text_polys
 
 def check_and_validate_polys(polys, tags, xxx_todo_changeme):
