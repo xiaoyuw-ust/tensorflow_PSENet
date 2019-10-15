@@ -70,7 +70,7 @@ def load_annoataion(p):
             # text_polys.append([[x1, y1], [x2, y2], [x3, y3], [x4, y4]])
 
             #TODO:maybe add '?' for icpr2018 (michael)
-            if label == '*' or label == '###' or label == '?':
+            if label == '1' or label == '2' or label == '3' or label == '1-s' or label == '2-s' or label == '3-s':
                 text_tags.append(True)
             else:
                 text_tags.append(False)
