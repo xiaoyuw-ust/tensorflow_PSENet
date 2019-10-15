@@ -64,7 +64,7 @@ def load_annoataion(p):
             label = line[-1]
             # strip BOM. \ufeff for python3,  \xef\xbb\bf for python2
             line = [i.strip('\ufeff').strip('\xef\xbb\xbf') for i in line]
-            line = np.array(list(map(float, line)))
+            line = np.array(list(map(float, line[:-1])))
             text_polys.append(line.reshape((-1,2)))
             # x1, y1, x2, y2, x3, y3, x4, y4 = list(map(float, line))
             # text_polys.append([[x1, y1], [x2, y2], [x3, y3], [x4, y4]])
