@@ -74,7 +74,7 @@ def load_annoataion(p):
                 text_tags.append(True)
             else:
                 text_tags.append(False)
-        padding_ploys(text_polys)
+        text_polys = padding_ploys(text_polys)
         return np.array(text_polys, dtype=np.float32), np.array(text_tags, dtype=np.bool)
 
 def padding_ploys(text_polys):
