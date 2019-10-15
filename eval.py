@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 tf.app.flags.DEFINE_string('test_data_path', None, '')
 tf.app.flags.DEFINE_string('gpu_list', '0', '')
 tf.app.flags.DEFINE_string('checkpoint_path', './', '')
+tf.app.flags.DEFINE_string('checkpoint_name', 'model.ckpt', '')
 tf.app.flags.DEFINE_string('output_dir', './results/', '')
 tf.app.flags.DEFINE_bool('no_write_images', False, 'do not write images')
 
@@ -167,8 +168,8 @@ def main(argv=None):
         variable_averages = tf.train.ExponentialMovingAverage(0.997, global_step)
         saver = tf.train.Saver(variable_averages.variables_to_restore())
         with tf.Session(config=tf.ConfigProto(allow_soft_placement=True)) as sess:
-            ckpt_state = tf.train.get_checkpoint_state(FLAGS.checkpoint_path)
-            model_path = os.path.join(FLAGS.checkpoint_path, os.path.basename(ckpt_state.model_checkpoint_path))
+            saver = tf.train.import_meta_graph(FLAGS.checkpoint_path + FLAGS.checkpoint_name + '.meta')
+            model_path = FLAGS.checkpoint_path + FLAGS.checkpoint_name 
             logger.info('Restore from {}'.format(model_path))
             saver.restore(sess, model_path)
 
@@ -216,7 +217,7 @@ def main(argv=None):
 
                     with open(res_file, 'w') as f:
                         num =0
-                        for i in xrange(len(boxes)):
+                        for i in range(len(boxes)):
                             # to avoid submitting errors
                             box = boxes[i]
                             if np.linalg.norm(box[0] - box[1]) < 5 or np.linalg.norm(box[3]-box[0]) < 5:
