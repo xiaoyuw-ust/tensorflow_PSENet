@@ -264,7 +264,7 @@ def generator(input_size=512, batch_size=32,
     :param scale_ratio:ground truth scale ratio
     :return:
     '''
-    image_list = np.array(get_files(['jpg', 'png', 'jpeg', 'JPG']))
+    image_list = np.array(get_files(['jpg', 'png', 'jpeg', 'JPG', 'PNG']))
 
     logger.info('{} training images in {}'.format(
         image_list.shape[0], FLAGS.training_data_path))
