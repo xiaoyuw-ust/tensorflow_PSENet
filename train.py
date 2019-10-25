@@ -127,8 +127,8 @@ def main(argv=None):
     if FLAGS.pretrained_model_path is not None:
         variable_restore_op = slim.assign_from_checkpoint_fn(FLAGS.pretrained_model_path, slim.get_trainable_variables(),
                                                              ignore_missing_vars=True)
-    gpu_options=tf.GPUOptions(allow_growth=True)
-    #gpu_options=tf.GPUOptions(per_process_gpu_memory_fraction=0.75)
+    # gpu_options=tf.GPUOptions(allow_growth=True)
+    gpu_options=tf.GPUOptions(per_process_gpu_memory_fraction=0.75)
     with tf.Session(config=tf.ConfigProto(gpu_options=gpu_options, allow_soft_placement=True)) as sess:
         if FLAGS.restore:
             logger.info('continue training from previous checkpoint')
