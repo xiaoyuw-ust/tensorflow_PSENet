@@ -70,10 +70,11 @@ def load_annoataion(p):
             # text_polys.append([[x1, y1], [x2, y2], [x3, y3], [x4, y4]])
 
             #TODO:maybe add '?' for icpr2018 (michael)
+            # Set true to ignore some tags
             if label == '*' or label == '###' or label == '?':
-                text_tags.append(False)
-            else:
                 text_tags.append(True)
+            else:
+                text_tags.append(False)
         text_polys = padding_ploys(text_polys)
         return np.array(text_polys, dtype=np.float32), np.array(text_tags, dtype=np.bool)
 
