@@ -157,7 +157,7 @@ def crop_area(im, polys, tags, crop_background=False, max_tries=50):
         if polys.shape[0] != 0:
             poly_axis_in_area = (polys[:, :, 0] >= xmin) & (polys[:, :, 0] <= xmax) \
                                 & (polys[:, :, 1] >= ymin) & (polys[:, :, 1] <= ymax)
-            selected_polys = np.where(np.sum(poly_axis_in_area, axis=1) == 4)[0]
+            selected_polys = np.where(np.sum(poly_axis_in_area, axis=1) == polys.shape[1])[0]
         else:
             selected_polys = []
         if len(selected_polys) == 0:
