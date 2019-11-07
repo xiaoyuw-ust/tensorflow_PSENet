@@ -112,7 +112,7 @@ def detect(seg_maps, timer, image_w, image_h, min_area_thresh=10, seg_map_thresh
     return np.array(boxes), kernals, timer
 
 def show_score_geo(color_im, kernels, im_res, img_path):
-    fig = plt.figure()
+    fig = plt.figure(figsize=(64,48))
     cmap = plt.cm.hot
     #
     ax = fig.add_subplot(241)
