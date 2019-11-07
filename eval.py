@@ -111,7 +111,7 @@ def detect(seg_maps, timer, image_w, image_h, min_area_thresh=10, seg_map_thresh
 
     return np.array(boxes), kernals, timer
 
-def show_score_geo(color_im, kernels, im_res):
+def show_score_geo(color_im, kernels, im_res, img_path):
     fig = plt.figure()
     cmap = plt.cm.hot
     #
@@ -147,7 +147,9 @@ def show_score_geo(color_im, kernels, im_res):
     im = im_res
     ax.imshow(im)
 
-    fig.show()
+    hot_img_path = os.path.join(img_path.split('.')[:-1].join('.'), '_hot', img_path.split('.')[-1])
+    fig.savefig(hot_img_path)
+    # fig.show()
 
 
 def main(argv=None):
@@ -231,6 +233,7 @@ def main(argv=None):
                 if not FLAGS.no_write_images:
                     img_path = os.path.join(FLAGS.output_dir, os.path.basename(im_fn))
                     cv2.imwrite(img_path, im[:, :, ::-1])
-                # show_score_geo(im_resized, kernels, im)
+                    show_score_geo(im_resized, kernels, im, img_path)
+
 if __name__ == '__main__':
     tf.app.run()
