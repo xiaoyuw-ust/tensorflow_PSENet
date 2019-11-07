@@ -147,7 +147,7 @@ def show_score_geo(color_im, kernels, im_res, img_path):
     im = im_res
     ax.imshow(im)
 
-    hot_img_path = os.path.join(img_path.split('.')[:-1].join('.'), '_hot', img_path.split('.')[-1])
+    hot_img_path = os.path.join('.'.join(img_path.split('.')[:-1]), '_hot', img_path.split('.')[-1])
     fig.savefig(hot_img_path)
     # fig.show()
 
